@@ -1,78 +1,106 @@
 // Met Office: shielding-and-wiring task
 
-// example1.txt
-const listOfBoxes = `2x3x4
-1x10x1
-5x7x4
-`
 
-// ========== step one =========== \\ 
+
+// ========== task one =========== \\ 
 // === Calculate the Shielding === \\
 // =============================== \\ 
 
 
 // First, parse the given string list into a workable array.
-const arrayOfBoxes = listOfBoxes.split(/\s/g).filter(Boolean)
+const boxesListToArray = list => list.split(/\s/g).filter(Boolean)
 
 // Create a function to calculate the total surface area and area of smallest side of each box
-function shieldingPerBox(box) {
+const shieldingPerBox = box => {
 
-  // parse each string, create three separate values to represent the length, width and height
+  // parse each string into an array and create three separate values to represent the length, width and height
   // this value is sorted in ascending order, to help calculate which side to use for the smallest side
   const boxArr = box.split('x').sort((a, b) => a - b);
 
   // assign identifiers for each side
-  const side1 = boxArr[0]*boxArr[1]*2
-  const side2 = boxArr[0]*boxArr[2]*2
-  const side3 = boxArr[2]*boxArr[1]*2
+  const [side1, side2, side3] = [ boxArr[0] * boxArr[1] * 2,
+                                  boxArr[0] * boxArr[2] * 2,
+                                  boxArr[2] * boxArr[1] * 2, ]
 
-  // calculate the surface area, and smallest side
+  // calculate the surface area
   const surfaceArea = side1 + side2 + side3
-  const smallestSide = boxArr[0]*boxArr[1];
 
-  // return the total shielding required 
+  // and the smallest side, which is used to calculate the amount of extra slack to provision for each box
+  const smallestSide = boxArr[0] * boxArr[1];
+
+  // return the total sheeting required for the shielding
   return surfaceArea + smallestSide
 }
 
 // Now iterate through each box in the array. Return a total sum for the amount of shielding required
-const totalShielding = arrayOfBoxes
+const totalShielding = (list) => { return list
       // first, convert each string value for the box into the required allowance of sheeting, equal to volume + slack
-                                    .map( box => shieldingPerBox(box))
+                                              .map( box => shieldingPerBox(box))
       // now calculate the total value of all boxes in the array. 
-                                    .reduce((accumulatedValue, currentBox) => accumulatedValue + currentBox)
+                                              .reduce((accumulatedValue, currentBox) => accumulatedValue + currentBox)
+}
 
 
-
-// ========= step two ========= \\ 
+// ========= task two ========= \\ 
 // === Calculate the Wiring === \\
 // ============================ \\ 
 
-// From the previous example, I will be using the arrayOfBoxes element
 
 // Create a function to calculate the total volume and shortest circumferance of each box
-function wiringPerBox(box) {
+const wiringPerBox = box => {
 
-  // parse each string, create three separate values to represent the length, width and height
-  // this value is sorted in ascending order, to help calculate which side to use for the slack
+  // parse each string into an array and create three separate values to represent the length, width and height
+  // this value is sorted in ascending order, to help calculate which side will have the shortest circumferance
   const boxArr = box.split('x').sort((a, b) => a - b);
 
   // calculate the volume
   const volume = boxArr[0] * boxArr[1] * boxArr[2]
 
-  // calculate the shortest circumferance
+  // calculate the shortest circumferance, this is used to calculate the amount of extra slack to provision for each box
   const shortestCircumferance = boxArr[0]*2 + boxArr[1]*2
 
-  // return the total wiring required
+  // return the total sheeting required for the wiring
   return volume + shortestCircumferance
 }
 
 // Now iterate through each box in the array
-const totalWiring = arrayOfBoxes
+const totalWiring = (list) => { return  list
       // first, convert each string value for the box into the required allowance of sheeting, equal to volume + slack
-                              .map( box => wiringPerBox(box))
+                                            .map( box => wiringPerBox(box))
       // now calculate the total value of all boxes in the array. 
-                              .reduce((accumulatedValue, currentBox) => accumulatedValue + currentBox)
+                                            .reduce((accumulatedValue, currentBox) => accumulatedValue + currentBox)
+}
 
 
-console.log(totalShielding)
-console.log(totalWiring)
+
+// below is some simple DOM manipulation code, that can gives access to the index.html file, so we can visualise the results.
+const calcValues = () => {
+
+  // resets the input & output boxes
+  document.querySelector("#output").innerHTML = "";
+
+  // create three elements to append to document
+  let newBox = document.createElement('li')
+  let li = document.createElement("li")
+  let li2 = document.createElement("li")
+
+  // access the value inputted from the textarea
+  let inputVal = document.querySelector("#box-group").value 
+
+  // run the shielding and wiring functions and attach to identifiers
+  let shield = document.createTextNode(totalShielding(boxesListToArray(inputVal)))
+  let wire = document.createTextNode(totalWiring(boxesListToArray(inputVal)))
+
+  // append each element with text values
+  newBox.append("Next box group:")
+  li.append("Total shielding: ", shield)
+  li2.append("Total wiring: ", wire)
+
+  // append each element to the document
+  document.querySelector("#output").appendChild(newBox)
+  document.querySelector("#output").appendChild(li)
+  document.querySelector("#output").appendChild(li2)
+
+  // reset the input box
+  document.querySelector("#myInp").value = ""
+}

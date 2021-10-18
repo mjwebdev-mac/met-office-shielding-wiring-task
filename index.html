@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Met Office coding task</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="index.js" defer></script>
+</head>
+<body>
+  <div class="page-container">
+    <h1>Shielding and wiring task calculator</h1>
+    <div class="items-container">
+      <div>
+        <h2>Enter list of boxes</h2>
+        <textarea type="text" id="box-group" rows="20"></textarea>
+      </div>
+      <div class="btn-container">
+        <h2>Click the button below to calculate</h2>
+        <button class="btn" onclick="calcValues()">Calculate</button>
+      </div>
+      <div>
+        <h2>Output</h2>
+        <div class="output-container">
+          <ul id="output">
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
