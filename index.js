@@ -102,5 +102,5 @@ const calcValues = () => {
   document.querySelector("#output").appendChild(li2)
 
   // reset the input box
-  document.querySelector("#myInp").value = ""
+  document.querySelector("#box-group").value = ""
 }
